@@ -1,6 +1,8 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,6 +11,13 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 currentPos, targetPos;
     [Header("Speed")]
     public float speed = 0.2f;
+    
+    [Header("Ground Tilemap")]
+    public Tilemap groundTilemap;
+    
+    [Header("Wall Tilemap")]
+    public Tilemap wallTilemap;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -18,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isMoving && allowedMove)
+        if (!isMoving)
         {
             if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)
             {
@@ -38,49 +47,40 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
-    public void MovePlayer(InputAction.CallbackContext context)
-    {
-        //Debug.Log("MovePlayer()");
-        //if (!isMoving)
-        //{
-        //    if(context.ReadValue<Vector2>().x < 0.0)
-        //    {
-        //        StartCoroutine(MovePlayerLerp(Vector3.left));
-        //    }
-        //    if (context.ReadValue<Vector2>().x > 0.0)
-        //    {
-        //        StartCoroutine(MovePlayerLerp(Vector3.right));
-        //    }
-        //    if (context.ReadValue<Vector2>().y < 0.0)
-        //    {
-        //        StartCoroutine(MovePlayerLerp(Vector3.down));
-        //    }
-        //    if (context.ReadValue<Vector2>().y > 0.0)
-        //    {
-        //        StartCoroutine(MovePlayerLerp(Vector3.up));
-        //    }
-        //}
-    }
-
     private IEnumerator MovePlayerLerp(Vector3 direction)
     {
-        isMoving = true;
-
-        float elapsedTime = 0;
-
-        currentPos = transform.position;
-        targetPos = currentPos + direction;
-
-        while (elapsedTime < speed)
+        if (canMove(direction))
         {
-            transform.position = Vector3.Lerp(currentPos, targetPos, (elapsedTime / speed));
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        // forces player to end in the right position
-        transform.position = targetPos;
+            isMoving = true;
 
-        isMoving = false;
+            float elapsedTime = 0;
+
+            currentPos = transform.position;
+            targetPos = currentPos + direction;
+
+            while (elapsedTime < speed)
+            {
+                transform.position = Vector3.Lerp(currentPos, targetPos, (elapsedTime / speed));
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            // forces player to end in the right position
+            transform.position = targetPos;
+
+            isMoving = false;
+        }
     }
+
+    // checks if the tile the player is about to move to is not a wall tile and is a ground tile
+    private bool canMove(Vector3 direction)
+    {
+        Vector3Int gridPos = groundTilemap.WorldToCell(transform.position + direction);
+        // if tile player is trying to move to is either not ground or a wall,
+        if(!groundTilemap.HasTile(gridPos) || wallTilemap.HasTile(gridPos))
+        {
+            return false; // player can't move.
+        }
+        return true;
+    }
+
 }
