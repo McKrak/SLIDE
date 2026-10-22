@@ -17,6 +17,11 @@ public class PlayerMovement : MonoBehaviour
     
     [Header("Wall Tilemap")]
     public Tilemap wallTilemap;
+    
+    [Header("Slide Tilemap")]
+    public Tilemap slideTilemap;
+
+    private Vector3 lastDirection;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -27,30 +32,43 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // get current grid coordinates
+        Vector3Int currentGridPos = groundTilemap.WorldToCell(transform.position);
+        
         if (!isMoving)
         {
-            if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)
+            if (slideTilemap.HasTile(currentGridPos) && canMove(lastDirection)) // if current tile is a slide tile,
             {
-                StartCoroutine(MovePlayerLerp(Vector3.up));
-            }
-            if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+                // force player to continue moving in same direction
+                StartCoroutine(MovePlayerLerp(lastDirection));
+                //Debug.Log("Sliding!");
+            } else
             {
-                StartCoroutine(MovePlayerLerp(Vector3.left));
-            }
-            if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed)
-            {
-                StartCoroutine(MovePlayerLerp(Vector3.down));
-            }
-            if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
-            {
-                StartCoroutine(MovePlayerLerp(Vector3.right));
+                if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)
+                {
+                    StartCoroutine(MovePlayerLerp(Vector3.up));
+                }
+                if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+                {
+                    StartCoroutine(MovePlayerLerp(Vector3.left));
+                }
+                if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed)
+                {
+                    StartCoroutine(MovePlayerLerp(Vector3.down));
+                }
+                if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+                {
+                    StartCoroutine(MovePlayerLerp(Vector3.right));
+                }
             }
         }
+
     }
     private IEnumerator MovePlayerLerp(Vector3 direction)
     {
         if (canMove(direction))
         {
+            lastDirection = direction;
             isMoving = true;
 
             float elapsedTime = 0;
@@ -76,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3Int gridPos = groundTilemap.WorldToCell(transform.position + direction);
         // if tile player is trying to move to is either not ground or a wall,
-        if(!groundTilemap.HasTile(gridPos) || wallTilemap.HasTile(gridPos))
+        if((!groundTilemap.HasTile(gridPos) && !slideTilemap.HasTile(gridPos)) || wallTilemap.HasTile(gridPos))
         {
             return false; // player can't move.
         }
