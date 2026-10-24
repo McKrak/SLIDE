@@ -16,11 +16,12 @@ public class MainMenu : MonoBehaviour{
 
     void Start(){
         _MainMenuCanvasGO.SetActive(true);
+        _OptionsCanvasGO.SetActive(false);
         
         EventSystem.current.SetSelectedGameObject(_MainMenuButton);
     }
 
-    //---------------------------------------------------------------
+    //----Main Menu Buttons-----------------------------------------------------------
 
     public void PlayButton(){
         Debug.Log("Play Button Pressed");
@@ -32,6 +33,11 @@ public class MainMenu : MonoBehaviour{
 
     public void OptionsButton(){
         Debug.Log("Options Button Pressed");
+
+        _MainMenuCanvasGO.SetActive(false);
+        _OptionsCanvasGO.SetActive(true);
+
+        EventSystem.current.SetSelectedGameObject(_OptionsButton);
     }
 
     public void CreditsButton(){
@@ -41,6 +47,15 @@ public class MainMenu : MonoBehaviour{
     public void QuitButton(){
         Debug.Log("Quit Button Pressed");
         Application.Quit();
+    }
+
+    //----Options Buttons-----------------------------------------------------------
+
+    public void OptionsBackButton(){
+        _MainMenuCanvasGO.SetActive(true);
+        _OptionsCanvasGO.SetActive(false);
+
+        EventSystem.current.SetSelectedGameObject(_MainMenuButton);
     }
 
 }
