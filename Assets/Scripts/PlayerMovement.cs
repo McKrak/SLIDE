@@ -7,7 +7,6 @@ using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
     private bool isMoving;
-    private bool allowedMove = true;
     private Vector3 currentPos, targetPos;
     [Header("Speed")]
     public float speed = 0.2f;
@@ -21,12 +20,23 @@ public class PlayerMovement : MonoBehaviour
     [Header("Slide Tilemap")]
     public Tilemap slideTilemap;
 
+    [Header("Conveyer Up Tilemap")]
+    public Tilemap conveyerU;
+
+    [Header("Conveyer Left Tilemap")]
+    public Tilemap conveyerL;
+
+    [Header("Conveyer Right Tilemap")]
+    public Tilemap conveyerR;
+
+    [Header("Conveyer Down Tilemap")]
+    public Tilemap conveyerD;
+
     private Vector3 lastDirection;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -42,7 +52,25 @@ public class PlayerMovement : MonoBehaviour
                 // force player to continue moving in same direction
                 StartCoroutine(MovePlayerLerp(lastDirection));
                 //Debug.Log("Sliding!");
-            } else
+            } 
+            else if (conveyerU.HasTile(currentGridPos) && canMove(Vector3.up)) // if current tile is a conveyerbelt up tile
+            {
+                // force player to move up
+                StartCoroutine(MovePlayerLerp(Vector3.up));
+            } 
+            else if (conveyerL.HasTile(currentGridPos) && canMove(Vector3.left)) // same logic for other directions
+            {
+                StartCoroutine(MovePlayerLerp(Vector3.left));
+            }
+            else if (conveyerR.HasTile(currentGridPos) && canMove(Vector3.right))
+            {
+                StartCoroutine(MovePlayerLerp(Vector3.right));
+            }
+            else if (conveyerD.HasTile(currentGridPos) && canMove(Vector3.down))
+            {
+                StartCoroutine(MovePlayerLerp(Vector3.down));
+            }
+            else
             {
                 if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)
                 {
@@ -94,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3Int gridPos = groundTilemap.WorldToCell(transform.position + direction);
         // if tile player is trying to move to is either not ground or a wall,
-        if((!groundTilemap.HasTile(gridPos) && !slideTilemap.HasTile(gridPos)) || wallTilemap.HasTile(gridPos))
+        if (wallTilemap.HasTile(gridPos) )
         {
             return false; // player can't move.
         }
