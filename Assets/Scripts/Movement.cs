@@ -4,29 +4,47 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
-public class PlayerMovement : MonoBehaviour
+public class Movement : MonoBehaviour
 {
-    private bool isMoving;
-    private bool allowedMove = true;
-    private Vector3 currentPos, targetPos;
+
     [Header("Speed")]
     public float speed = 0.2f;
-    
+
+    [Header("Controlled By Player")]
+    public bool isControlledByPlayer = false;
+
+    [Header("Slides On Ice")]
+    public bool slidesOnIce = true;
+
+    [Header("Moves On Conveyer")]
+    public bool movesOnConveyer = true;
+
+
     [Header("Ground Tilemap")]
     public Tilemap groundTilemap;
-    
     [Header("Wall Tilemap")]
     public Tilemap wallTilemap;
-    
     [Header("Slide Tilemap")]
     public Tilemap slideTilemap;
+    [Header("Conveyer Up Tilemap")]
+    public Tilemap conveyerU;
+    [Header("Conveyer Left Tilemap")]
+    public Tilemap conveyerL;
+    [Header("Conveyer Right Tilemap")]
+    public Tilemap conveyerR;
+    [Header("Conveyer Down Tilemap")]
+    public Tilemap conveyerD;
 
+    private Vector3 currentPos, targetPos;
+    private bool isMoving;
     private Vector3 lastDirection;
+
+    private bool inTeleporter = false;
+    private GameObject teleporterDest = null;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -34,15 +52,33 @@ public class PlayerMovement : MonoBehaviour
     {
         // get current grid coordinates
         Vector3Int currentGridPos = groundTilemap.WorldToCell(transform.position);
-        
+
         if (!isMoving)
         {
-            if (slideTilemap.HasTile(currentGridPos) && canMove(lastDirection)) // if current tile is a slide tile,
+            if (slideTilemap.HasTile(currentGridPos) && canMove(lastDirection) && slidesOnIce) // if current tile is a slide tile,
             {
                 // force player to continue moving in same direction
                 StartCoroutine(MovePlayerLerp(lastDirection));
                 //Debug.Log("Sliding!");
-            } else
+            }
+            else if (conveyerU.HasTile(currentGridPos) && canMove(Vector3.up) && movesOnConveyer)
+            {
+                StartCoroutine(MovePlayerLerp(Vector3.up));
+            }
+            else if (conveyerL.HasTile(currentGridPos) && canMove(Vector3.left) && movesOnConveyer) // same logic for other directions
+            {
+                StartCoroutine(MovePlayerLerp(Vector3.left));
+            }
+            else if (conveyerR.HasTile(currentGridPos) && canMove(Vector3.right) && movesOnConveyer)
+            {
+                StartCoroutine(MovePlayerLerp(Vector3.right));
+            }
+            else if (conveyerD.HasTile(currentGridPos) && canMove(Vector3.down) && movesOnConveyer)
+            {
+                StartCoroutine(MovePlayerLerp(Vector3.down));
+            }
+
+            else if (isControlledByPlayer)
             {
                 if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)
                 {
@@ -64,6 +100,30 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
+
+
+    // Detects if enter teleporter, set inTeleporter to true so we teleport when we're stopped
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        print("GURT");
+        if ((collision.tag == "Teleporter") && (!inTeleporter))
+        {
+            inTeleporter = true;
+            Teleporter script = collision.gameObject.GetComponent<Teleporter>();
+            teleporterDest = script.destinationTeleporter;
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D collision)
+    {
+        inTeleporter = true;
+    }
+
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        inTeleporter = false;
+    }
+
     private IEnumerator MovePlayerLerp(Vector3 direction)
     {
         if (canMove(direction))
@@ -86,6 +146,18 @@ public class PlayerMovement : MonoBehaviour
             transform.position = targetPos;
 
             isMoving = false;
+
+            // Teleporter logic
+            if (inTeleporter && (teleporterDest != null))
+            {
+                print("WARP");
+                transform.position = new Vector3(
+                    teleporterDest.transform.position.x,
+                    teleporterDest.transform.position.y,
+                    transform.position.z
+                );
+                teleporterDest = null;
+            }
         }
     }
 
@@ -94,7 +166,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3Int gridPos = groundTilemap.WorldToCell(transform.position + direction);
         // if tile player is trying to move to is either not ground or a wall,
-        if((!groundTilemap.HasTile(gridPos) && !slideTilemap.HasTile(gridPos)) || wallTilemap.HasTile(gridPos))
+        if (wallTilemap.HasTile(gridPos))
         {
             return false; // player can't move.
         }
