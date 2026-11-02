@@ -34,6 +34,19 @@ public class Movement : MonoBehaviour
     public Tilemap conveyerR;
     [Header("Conveyer Down Tilemap")]
     public Tilemap conveyerD;
+    //[Header("Collider Left")]
+    //public GameObject colliderL;
+    //[Header("Collider Right")]
+    //public GameObject colliderR;
+    //[Header("Collider Up")]
+    //public GameObject colliderU;
+    //[Header("Collider Down")]
+    //public GameObject colliderD;
+
+    private bool neighborL = false;
+    private bool neighborR = false;
+    private bool neighborU = false;
+    private bool neighborD = false;
 
     private Vector3 currentPos, targetPos;
     private bool isMoving;
@@ -50,7 +63,16 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //updateColliders();  
         // get current grid coordinates
+        // check to see if objects are on each side of the player using NeighborDetector
+        if (isControlledByPlayer)
+        {
+            neighborL = GetComponent<NeighborDetector>().raycast(Vector2.left);
+            neighborR = GetComponent<NeighborDetector>().raycast(Vector2.right);
+            neighborU = GetComponent<NeighborDetector>().raycast(Vector2.up);
+            neighborD = GetComponent<NeighborDetector>().raycast(Vector2.down);
+        }
         Vector3Int currentGridPos = groundTilemap.WorldToCell(transform.position);
 
         if (!isMoving)
@@ -101,11 +123,35 @@ public class Movement : MonoBehaviour
 
     }
 
+    // used to update the colliders for the player with other objects.
+    //void updateColliders()
+    //{
+    //    isCollidingL = colliderL.GetComponent<CollisionDetection>().isColliding();
+    //    if(isCollidingL)
+    //    {
+    //        Debug.Log("Colliding Left!");
+    //    }
+    //    //isCollidingR = colliderR.GetComponent<CollisionDetection>().isColliding();
+    //    //if(isCollidingR)
+    //    //{
+    //    //    print("Colliding Right");
+    //    //}
+    //    //isCollidingU = colliderU.GetComponent<CollisionDetection>().isColliding();
+    //    //if(isCollidingU)
+    //    //{
+    //    //    print("Colliding Up");
+    //    //}
+    //    //isCollidingD = colliderD.GetComponent<CollisionDetection>().isColliding();
+    //    //if(isCollidingD)
+    //    //{
+    //    //    print("Colliding Down");
+    //    //}
+    //}
 
     // Detects if enter teleporter, set inTeleporter to true so we teleport when we're stopped
     void OnTriggerEnter2D(Collider2D collision)
     {
-        print("GURT");
+        //print("GURT"); // Antonio, who is gurt?
         if ((collision.tag == "Teleporter") && (!inTeleporter))
         {
             inTeleporter = true;
@@ -169,6 +215,35 @@ public class Movement : MonoBehaviour
         if (wallTilemap.HasTile(gridPos))
         {
             return false; // player can't move.
+        } else
+        {
+            switch (direction.ToString())
+            {
+                case "(0.0, 1.0, 0.0)":
+                    if (neighborU)
+                    {
+                        return false;
+                    }
+                    break;
+                case "(0.0, -1.0, 0.0)":
+                    if (neighborD)
+                    {
+                        return false;
+                    }
+                    break;
+                case "(-1.0, 0.0, 0.0)":
+                    if (neighborL)
+                    {
+                        return false;
+                    }
+                    break;
+                case "(1.0, 0.0, 0.0)":
+                    if (neighborR)
+                    {
+                        return false;
+                    }
+                    break;
+            }
         }
         return true;
     }
