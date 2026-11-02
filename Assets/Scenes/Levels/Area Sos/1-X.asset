@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d35c5bd40b7deac4abac2297b8f51de6, type: 3}
   m_Name: 1-X
   m_EditorClassIdentifier: Assembly-CSharp::AreaData
-  AreaName: 1
+  AreaName: Chapter 1
   Levels:
   - {fileID: 11400000, guid: bc5ffae8bbc45854a961d4e9b4e3e7c6, type: 2}
   - {fileID: 11400000, guid: 0f3fc6a565aa00448a69a4ce1d05cb0a, type: 2}
