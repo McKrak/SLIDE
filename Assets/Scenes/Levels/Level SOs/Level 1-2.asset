@@ -16,5 +16,5 @@ MonoBehaviour:
   ISUnlockedByDefault: 0
   Scene:
     m_SceneAsset: {fileID: 0}
-    m_SceneName: Level 1-1
+    m_SceneName: Level 1-3
   LevelName: 1-2
