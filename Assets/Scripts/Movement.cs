@@ -19,6 +19,8 @@ public class Movement : MonoBehaviour
     [Header("Moves On Conveyer")]
     public bool movesOnConveyer = true;
 
+    bool playerAlive = true;
+
 
     [Header("Ground Tilemap")]
     public Tilemap groundTilemap;
@@ -34,6 +36,8 @@ public class Movement : MonoBehaviour
     public Tilemap conveyerR;
     [Header("Conveyer Down Tilemap")]
     public Tilemap conveyerD;
+    [Header("Breakable Tilemap")]
+    public Tilemap breakableTilemap;
 
     private Vector3 currentPos, targetPos;
     private bool isMoving;
@@ -53,9 +57,14 @@ public class Movement : MonoBehaviour
         // get current grid coordinates
         Vector3Int currentGridPos = groundTilemap.WorldToCell(transform.position);
 
-        if (!isMoving)
+        if (!isMoving && playerAlive)
         {
-            if (slideTilemap.HasTile(currentGridPos) && canMove(lastDirection) && slidesOnIce) // if current tile is a slide tile,
+            if (breakableTilemap.HasTile(currentGridPos))
+            {
+                playerAlive = false;
+                PlayerDie();
+            }
+            else if (slideTilemap.HasTile(currentGridPos) && canMove(lastDirection) && slidesOnIce) // if current tile is a slide tile,
             {
                 // force player to continue moving in same direction
                 StartCoroutine(MovePlayerLerp(lastDirection));
@@ -171,6 +180,17 @@ public class Movement : MonoBehaviour
             return false; // player can't move.
         }
         return true;
+    }
+
+    void PlayerDie()
+    {
+        StartCoroutine(restartScene());
+    }
+
+    IEnumerator restartScene()
+    {
+        yield return new WaitForSeconds(1f);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 
 }
