@@ -592,6 +592,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5276802172922567001, guid: 444854886d0fb204aa00a3810be75445, type: 3}
+      propertyPath: levelUI
+      value: 
+      objectReference: {fileID: 1930716396}
+    - target: {fileID: 5276802172922567001, guid: 444854886d0fb204aa00a3810be75445, type: 3}
       propertyPath: conveyerD
       value: 
       objectReference: {fileID: 1192678016}
@@ -3278,6 +3282,11 @@ Grid:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4950800583748669616, guid: 444854886d0fb204aa00a3810be75445, type: 3}
   m_PrefabInstance: {fileID: 249434990}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1930716396 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3169203073642986376, guid: 76740bfab19cd1c9683567053c83469f, type: 3}
+  m_PrefabInstance: {fileID: 482232117}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1989890080
 GameObject:
