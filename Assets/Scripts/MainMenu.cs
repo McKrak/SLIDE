@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 public class MainMenu : MonoBehaviour{
 
     [Header("Set Up")] // Input the canvas of the menu you want active. (If we want a submenu for the options, we would put a new variable for the canvas of the options menu)
-    [SerializeField] private GameObject _MainMenuCanvasGO;
+    [SerializeField] private GameObject _MainMenuGO;
     [SerializeField] private GameObject _LevelSelectCanvasGO;
     [SerializeField] private GameObject _OptionsCanvasGO;
     [SerializeField] private GameObject _CreditsCanvasGO;
@@ -17,38 +17,64 @@ public class MainMenu : MonoBehaviour{
     [SerializeField] private GameObject _CreditsButton;
 
     void Start(){
-        _MainMenuCanvasGO.SetActive(true);
+        OpenMainMenu();
+    }
+
+    //----QOL Functions-----------------------------------------------------------
+
+    private void OpenMainMenu(){
+        _MainMenuGO.SetActive(true);
+        _LevelSelectCanvasGO.SetActive(false);
         _OptionsCanvasGO.SetActive(false);
         _CreditsCanvasGO.SetActive(false);
-        
+
         EventSystem.current.SetSelectedGameObject(_MainMenuButton);
     }
 
-    //----Main Menu Buttons-----------------------------------------------------------
+    private void OpenLevelSelect(){
+        _MainMenuGO.SetActive(false);
+        _LevelSelectCanvasGO.SetActive(true);
+        _OptionsCanvasGO.SetActive(false);
+        _CreditsCanvasGO.SetActive(false);
 
-    public void PlayButton(){
-        Debug.Log("Play Button Pressed");
+        EventSystem.current.SetSelectedGameObject(_LevelSelectButton);
     }
 
-    public void LevelSelectButton(){
-        Debug.Log("Level Select Button Pressed");
-    }
-
-    public void OptionsButton(){
-        _MainMenuCanvasGO.SetActive(false);
+    private void OpenOptionsMenu(){
+        _MainMenuGO.SetActive(false);
+        _LevelSelectCanvasGO.SetActive(false);
         _OptionsCanvasGO.SetActive(true);
         _CreditsCanvasGO.SetActive(false);
 
         EventSystem.current.SetSelectedGameObject(_OptionsButton);
     }
 
-    public void CreditsButton(){
-        _MainMenuCanvasGO.SetActive(false);
+    private void OpenCredits(){
+        _MainMenuGO.SetActive(false);
+        _LevelSelectCanvasGO.SetActive(false);
         _OptionsCanvasGO.SetActive(false);
         _CreditsCanvasGO.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(_CreditsButton);
+    }
 
+    //----Main Menu Buttons-----------------------------------------------------------
+
+    public void PlayButton(){
+        Debug.Log("Play Button Pressed");
+        SceneManager.LoadScene(1);
+    }
+
+    public void LevelSelectButton(){
+        OpenLevelSelect();
+    }
+
+    public void OptionsButton(){
+        OpenOptionsMenu();
+    }
+
+    public void CreditsButton(){
+        OpenCredits();
     }
 
     public void QuitButton(){
@@ -56,24 +82,10 @@ public class MainMenu : MonoBehaviour{
         Application.Quit();
     }
 
-    //----Options Buttons-----------------------------------------------------------
-
-    public void OptionsBackButton(){
-        _MainMenuCanvasGO.SetActive(true);
-        _OptionsCanvasGO.SetActive(false);
-        _CreditsCanvasGO.SetActive(false);
-
-        EventSystem.current.SetSelectedGameObject(_MainMenuButton);
-    }
-
-    //----Credits Buttons-----------------------------------------------------------
-
-    public void CreditsBackButton(){
-        _MainMenuCanvasGO.SetActive(true);
-        _OptionsCanvasGO.SetActive(false);
-        _CreditsCanvasGO.SetActive(false);
-
-        EventSystem.current.SetSelectedGameObject(_MainMenuButton);
+    //----Generic Buttons-----------------------------------------------------------
+    
+    public void BackButtonMainMenu(){
+        OpenMainMenu();
     }
 
 }
