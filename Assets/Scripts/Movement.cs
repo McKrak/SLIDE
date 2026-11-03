@@ -2,6 +2,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
 public class Movement : MonoBehaviour
@@ -20,6 +21,10 @@ public class Movement : MonoBehaviour
     public bool movesOnConveyer = true;
 
     bool playerAlive = true;
+    bool isWin = false;
+
+    [Header("Level UI Object")]
+    public GameObject levelUI;
 
 
     [Header("Ground Tilemap")]
@@ -68,7 +73,9 @@ public class Movement : MonoBehaviour
             }
             else if (goalTilemap != null && goalTilemap.HasTile(currentGridPos))
             {
-                
+                playerAlive = false;
+                isWin = true;
+                levelUI.SetActive(true);
             }
             
             else if (slideTilemap.HasTile(currentGridPos) && canMove(lastDirection) && slidesOnIce) // if current tile is a slide tile,
@@ -113,6 +120,12 @@ public class Movement : MonoBehaviour
                     StartCoroutine(MovePlayerLerp(Vector3.right));
                 }
             }
+        } else if (isWin)
+        {
+            if (Keyboard.current.anyKey.isPressed)
+            {
+                SceneManager.LoadScene("Main Menu");
+            }
         }
 
     }
@@ -121,7 +134,6 @@ public class Movement : MonoBehaviour
     // Detects if enter teleporter, set inTeleporter to true so we teleport when we're stopped
     void OnTriggerEnter2D(Collider2D collision)
     {
-        print("GURT");
         if ((collision.tag == "Teleporter") && (!inTeleporter))
         {
             inTeleporter = true;
