@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 public class MainMenu : MonoBehaviour{
 
     [Header("Set Up")] // Input the canvas of the menu you want active. (If we want a submenu for the options, we would put a new variable for the canvas of the options menu)
-    [SerializeField] private GameObject _MainMenuCanvasGO;
+    [SerializeField] private GameObject _MainMenuGO;
     [SerializeField] private GameObject _LevelSelectCanvasGO;
     [SerializeField] private GameObject _OptionsCanvasGO;
     [SerializeField] private GameObject _CreditsCanvasGO;
@@ -23,7 +23,7 @@ public class MainMenu : MonoBehaviour{
     //----QOL Functions-----------------------------------------------------------
 
     private void OpenMainMenu(){
-        _MainMenuCanvasGO.SetActive(true);
+        _MainMenuGO.SetActive(true);
         _LevelSelectCanvasGO.SetActive(false);
         _OptionsCanvasGO.SetActive(false);
         _CreditsCanvasGO.SetActive(false);
@@ -32,7 +32,7 @@ public class MainMenu : MonoBehaviour{
     }
 
     private void OpenLevelSelect(){
-        _MainMenuCanvasGO.SetActive(false);
+        _MainMenuGO.SetActive(false);
         _LevelSelectCanvasGO.SetActive(true);
         _OptionsCanvasGO.SetActive(false);
         _CreditsCanvasGO.SetActive(false);
@@ -41,7 +41,7 @@ public class MainMenu : MonoBehaviour{
     }
 
     private void OpenOptionsMenu(){
-        _MainMenuCanvasGO.SetActive(false);
+        _MainMenuGO.SetActive(false);
         _LevelSelectCanvasGO.SetActive(false);
         _OptionsCanvasGO.SetActive(true);
         _CreditsCanvasGO.SetActive(false);
@@ -50,7 +50,7 @@ public class MainMenu : MonoBehaviour{
     }
 
     private void OpenCredits(){
-        _MainMenuCanvasGO.SetActive(false);
+        _MainMenuGO.SetActive(false);
         _LevelSelectCanvasGO.SetActive(false);
         _OptionsCanvasGO.SetActive(false);
         _CreditsCanvasGO.SetActive(true);
