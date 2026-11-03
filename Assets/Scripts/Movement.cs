@@ -38,6 +38,8 @@ public class Movement : MonoBehaviour
     public Tilemap conveyerD;
     [Header("Breakable Tilemap")]
     public Tilemap breakableTilemap;
+    [Header("Goal Tilemap")]
+    public Tilemap goalTilemap;
 
     private Vector3 currentPos, targetPos;
     private bool isMoving;
@@ -59,11 +61,16 @@ public class Movement : MonoBehaviour
 
         if (!isMoving && playerAlive)
         {
-            if (breakableTilemap.HasTile(currentGridPos))
+            if ((breakableTilemap != null) && breakableTilemap.HasTile(currentGridPos))
             {
                 playerAlive = false;
                 PlayerDie();
             }
+            else if (goalTilemap != null && goalTilemap.HasTile(currentGridPos))
+            {
+                
+            }
+            
             else if (slideTilemap.HasTile(currentGridPos) && canMove(lastDirection) && slidesOnIce) // if current tile is a slide tile,
             {
                 // force player to continue moving in same direction
@@ -185,6 +192,11 @@ public class Movement : MonoBehaviour
     void PlayerDie()
     {
         StartCoroutine(restartScene());
+    }
+
+    void PlayerGoal()
+    {
+        
     }
 
     IEnumerator restartScene()
