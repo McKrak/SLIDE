@@ -2613,10 +2613,6 @@ PrefabInstance:
       propertyPath: destinationTeleporter
       value: 
       objectReference: {fileID: 1201889959}
-    - target: {fileID: 3761669564838507432, guid: 152ed68d334e7b25c8202ba500465e6a, type: 3}
-      propertyPath: m_BodyType
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6629742746335784302, guid: 152ed68d334e7b25c8202ba500465e6a, type: 3}
       propertyPath: m_Name
       value: Teleporter
