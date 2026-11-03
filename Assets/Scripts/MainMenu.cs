@@ -62,6 +62,7 @@ public class MainMenu : MonoBehaviour{
 
     public void PlayButton(){
         Debug.Log("Play Button Pressed");
+        SceneManager.LoadScene(1);
     }
 
     public void LevelSelectButton(){
