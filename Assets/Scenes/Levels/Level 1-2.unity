@@ -608,6 +608,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 411203655}
     - target: {fileID: 5276802172922567001, guid: 444854886d0fb204aa00a3810be75445, type: 3}
+      propertyPath: goalTilemap
+      value: 
+      objectReference: {fileID: 1123653631}
+    - target: {fileID: 5276802172922567001, guid: 444854886d0fb204aa00a3810be75445, type: 3}
       propertyPath: wallTilemap
       value: 
       objectReference: {fileID: 1435047920}
