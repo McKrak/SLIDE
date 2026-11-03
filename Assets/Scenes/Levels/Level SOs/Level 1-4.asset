@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Level 1-4
   m_EditorClassIdentifier: Assembly-CSharp::LevelData
   LevelID: 1-4
-  ISUnlockedByDefault: 0
+  ISUnlockedByDefault: 1
   Scene:
-    m_SceneAsset: {fileID: 0}
-    m_SceneName: Level 1-1
+    m_SceneAsset: {fileID: 102900000, guid: c039a59eabd2a934683621a8d1ceb017, type: 3}
+    m_SceneName: Level 1-4
   LevelName: 1-4
