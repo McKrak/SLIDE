@@ -61,8 +61,12 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // get current grid coordinates
-        Vector3Int currentGridPos = groundTilemap.WorldToCell(transform.position);
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            forceRestart();
+        }
+            // get current grid coordinates
+            Vector3Int currentGridPos = groundTilemap.WorldToCell(transform.position);
 
         if (!isMoving && playerAlive)
         {
@@ -214,6 +218,11 @@ public class Movement : MonoBehaviour
     IEnumerator restartScene()
     {
         yield return new WaitForSeconds(1f);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+    }
+
+    void forceRestart()
+    {
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
 
